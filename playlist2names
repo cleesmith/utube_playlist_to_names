@@ -1,0 +1,72 @@
+#!/bin/bash
+
+if [ -z "$1" ];
+then
+	echo "Please, specify the playlist code as argument" 1>&2
+	exit 1
+fi
+URL="https://www.youtube.com/playlist?list=$1"
+
+withnames=false
+if [[ "$2" = "withnames" ]];
+then
+	withnames=true
+fi
+TMPFILE=$(mktemp "/tmp/$0.tmp.XXXXXX") || {
+	echo "Temporary file creation failed" 1>&2
+	exit 1
+}
+
+COMMAND=""
+if [[ -n $(type -p wget) ]];
+then
+	COMMAND="wget -o /dev/null -O '$TMPFILE' '$URL'"
+fi
+if [ -z "$COMMAND" ] && [[ -n $(type -p curl) ]];
+then
+	COMMAND="curl -s -o '$TMPFILE' '$URL'"
+fi
+if [ -z "$COMMAND" ];
+then
+	echo "Please, install wget or curl to use this script" 1>&2
+	exit 1
+fi
+
+eval "$COMMAND"
+
+if $withnames;
+then
+	#original:
+	#grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/g' | sed 's/\"/\'$'\n''/' | sed 's/.*watch/https:\/\/www.youtube.com\/watch/g' | sed 's/&amp.*//g' | grep -v '^$' > "cls_$1.txt"
+	#cls: only the titles of videos:
+	grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/' | sed 's/\".*//g' | grep -v '^$' > "cls_$1.txt"
+else
+	grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*watch/https:\/\/www.youtube.com\/watch/g' | sed 's/&amp.*//g' > "cls_$1.txt"
+fi
+
+CONTINUATION=$(grep 'continuation=' $TMPFILE | head -n1 | cut -d ';' -f2-3 | cut -d '"' -f 1 | cut -d '\' -f1)
+
+while [[ "$CONTINUATION" =~ ^continuation.* ]]
+do
+	URL='https://www.youtube.com/browse_ajax?action_continuation=1&'$CONTINUATION
+
+	if [[ -n $(type -p wget) ]];
+	then
+		wget -o /dev/null -O "$TMPFILE" "$URL"
+	else
+		curl -s -o "$TMPFILE" "$URL"
+	fi
+	if $withnames;
+	then
+		#original:
+		#sed 's/\\n/\'$'\n''/g' "$TMPFILE" | grep -e "data-title=" | sed 's/.*data-title=\\"/\'$'\n''/g' | sed 's/\\"/\'$'\n''/'| sed 's/.*watch/https:\/\/www.youtube.com\//g'| sed 's/\\u0026amp.*//g' | grep -v '^$' >> "cls_$1.txt"
+		#cls: only the titles of videos:
+		sed 's/\\n/\'$'\n''/g' "$TMPFILE" | grep -e "data-title=" |  sed 's/.*data-title=\\"/\'$'\n''/g' | sed 's/\".*//g' | sed 's/\\//g' | grep -v '^$' >> "cls_$1.txt"
+	else
+		tr -s '\\|/' '\n' < "$TMPFILE" | grep "^watch" | sed 's/\\u0026amp;\(.*\)//g' | sed 's/watch/https:\/\/www.youtube.com\/watch/g' | sort -u >> "cls_$1.txt"
+	fi
+
+	CONTINUATION=$(sed 's/action_continuation=1\\u0026amp;/\'$'\n''/g' $TMPFILE | tail -n1 | cut -d '\' -f1)
+done
+
+rm -f $TMPFILE

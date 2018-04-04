@@ -1,0 +1,10 @@
+fetch video titles only from the
+"tarot decks" playlist html from youtube:
+./playlist2links PLK_NHLbnG-k_iilj5bn6mGVR6OK4jhNcY withnames
+
+download "tarot decks" playlist html from youtube:
+wget -o /dev/null -O 'cls.tmp' 'https://www.youtube.com/playlist?list=PLK_NHLbnG-k_iilj5bn6mGVR6OK4jhNcY'
+
+grep 'continuation=' cls.tmp | head -n1 | cut -d ';' -f2-3 | cut -d '"' -f 1 | cut -d '\' -f1
+...or:
+./continuation

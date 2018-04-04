@@ -1,0 +1,4 @@
+rm -f cls_grep.txt
+grep -e "^<tr.*<a href=\"/watch?v=.*$1" cls.tmp | sed 's/.*data-title=\"/\'$'\n''/' | sed 's/\".*//g' | grep -v '^$' > "cls_grep.txt"
+
+#  grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/g' | sed 's/\"/\'$'\n''/' | sed 's/.*watch/https:\/\/www.youtube.com\/watch/g' | sed 's/&amp.*//g' | grep -v '^$' > "cls_$1.txt"

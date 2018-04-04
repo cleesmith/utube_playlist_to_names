@@ -1,0 +1,2 @@
+CONTINUATION=$(grep 'continuation=' cls.tmp | head -n1 | cut -d ';' -f2-3 | cut -d '"' -f 1 | cut -d '\' -f1)
+echo "$CONTINUATION"
