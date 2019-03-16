@@ -1,6 +1,22 @@
-fetch video titles only from the
-"tarot decks" playlist html from youtube:
+notes:
+March 2019:
+MARY-EL tarot
+https://www.youtube.com/watch?v=Y1_tOS8UDMo
+- playlist2names script only does the above, but 
+  we need the "list" param to link to the video, like this:
+https://www.youtube.com/watch?v=Y1_tOS8UDMo&list=PLK_NHLbnG-k_iilj5bn6mGVR6OK4jhNcY
+
+* command to fetch video titles/links from a YouTube playlist:
+
+1) tarot:
 ./playlist2names PLK_NHLbnG-k_iilj5bn6mGVR6OK4jhNcY withnames
+
+2) oracle:
+./playlist2names PLK_NHLbnG-k-w6K6TXT0GRbUkfD9-9Zfr withnames
+
+3) lenormand:
+./playlist2names PLK_NHLbnG-k9Af2Pt3LckJxAbxXompFoW withnames
+
 
 download "tarot decks" playlist html from youtube:
 wget -o /dev/null -O 'cls.tmp' 'https://www.youtube.com/playlist?list=PLK_NHLbnG-k_iilj5bn6mGVR6OK4jhNcY'

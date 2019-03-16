@@ -37,9 +37,9 @@ eval "$COMMAND"
 if $withnames;
 then
 	#original:
-	#grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/g' | sed 's/\"/\'$'\n''/' | sed 's/.*watch/https:\/\/www.youtube.com\/watch/g' | sed 's/&amp.*//g' | grep -v '^$' > "cls_$1.txt"
+	grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/g' | sed 's/\"/\'$'\n''/' | sed 's/.*watch/https:\/\/www.youtube.com\/watch/g' | sed 's/&amp.*//g' | grep -v '^$' > "cls_$1.txt"
 	#cls: only the titles of videos:
-	grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/' | sed 's/\".*//g' | grep -v '^$' > "cls_$1.txt"
+	#grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*data-title=\"/\'$'\n''/' | sed 's/\".*//g' | grep -v '^$' > "cls_$1.txt"
 else
 	grep -e "^<tr.*<a href=\"/watch?v=.*$1" "$TMPFILE" | sed 's/.*watch/https:\/\/www.youtube.com\/watch/g' | sed 's/&amp.*//g' > "cls_$1.txt"
 fi
@@ -59,9 +59,9 @@ do
 	if $withnames;
 	then
 		#original:
-		#sed 's/\\n/\'$'\n''/g' "$TMPFILE" | grep -e "data-title=" | sed 's/.*data-title=\\"/\'$'\n''/g' | sed 's/\\"/\'$'\n''/'| sed 's/.*watch/https:\/\/www.youtube.com\//g'| sed 's/\\u0026amp.*//g' | grep -v '^$' >> "cls_$1.txt"
+		sed 's/\\n/\'$'\n''/g' "$TMPFILE" | grep -e "data-title=" | sed 's/.*data-title=\\"/\'$'\n''/g' | sed 's/\\"/\'$'\n''/'| sed 's/.*watch/https:\/\/www.youtube.com\//g'| sed 's/\\u0026amp.*//g' | grep -v '^$' >> "cls_$1.txt"
 		#cls: only the titles of videos:
-		sed 's/\\n/\'$'\n''/g' "$TMPFILE" | grep -e "data-title=" |  sed 's/.*data-title=\\"/\'$'\n''/g' | sed 's/\".*//g' | sed 's/\\//g' | grep -v '^$' >> "cls_$1.txt"
+		#sed 's/\\n/\'$'\n''/g' "$TMPFILE" | grep -e "data-title=" |  sed 's/.*data-title=\\"/\'$'\n''/g' | sed 's/\".*//g' | sed 's/\\//g' | grep -v '^$' >> "cls_$1.txt"
 	else
 		tr -s '\\|/' '\n' < "$TMPFILE" | grep "^watch" | sed 's/\\u0026amp;\(.*\)//g' | sed 's/watch/https:\/\/www.youtube.com\/watch/g' | sort -u >> "cls_$1.txt"
 	fi
