@@ -1,5 +1,5 @@
 notes:
-March 2019:
+March 2019 example:
 MARY-EL tarot
 https://www.youtube.com/watch?v=Y1_tOS8UDMo
 - playlist2names script only does the above, but 
